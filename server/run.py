@@ -1,4 +1,3 @@
-import server
-import server.server
+from server import server
 
-app = server.server()
+app = server()
