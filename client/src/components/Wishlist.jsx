@@ -19,16 +19,16 @@ function Wishlist() {
     try {
       const token = localStorage.getItem("token");
       if (token) {
-        const res = await axios.get("http://localhost:5000/user_wishlist_get", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!res?.data?.message) {
-          setWishlist(res?.data?.map(parseProduct));
-        } else {
-          setWishlist([]);
-        }
+        const res = await axios.get(
+          "https://the-clothing-world-an-ecom-site.onrender.com/user_wishlist_get",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const productIds = res.data.map((item) => item.product_detail_id);
+        setWishlist(productIds);
       }
     } catch (error) {
       console.error("Error fetching wishlist:", error);
@@ -53,7 +53,7 @@ function Wishlist() {
       quantity: quantity,
     };
     const response = await axios.post(
-      "http://localhost:5000/user_bag_add",
+      "https://the-clothing-world-an-ecom-site.onrender.com/user_bag_add",
       data,
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -68,7 +68,7 @@ function Wishlist() {
     }
     try {
       const res = await axios.post(
-        "http://localhost:5000/remove_user_wishlist",
+        "https://the-clothing-world-an-ecom-site.onrender.com/remove_user_wishlist",
         {
           productid: productId,
         },
@@ -95,7 +95,7 @@ function Wishlist() {
   const fetchProducts = async (category) => {
     try {
       let apiUrl = "";
-      apiUrl = `http://localhost:5000/products/mens/${category}`;
+      apiUrl = `https://the-clothing-world-an-ecom-site.onrender.com/products/mens/${category}`;
       const response = await axios.get(apiUrl);
       return response.data.map(parseProduct);
     } catch (error) {

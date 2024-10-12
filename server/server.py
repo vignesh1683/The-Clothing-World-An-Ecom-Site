@@ -15,7 +15,8 @@ app = Flask(__name__)
 CORS(app)
 
 app.config['SECRET_KEY'] = 'rzawsedrtyuioyi764321345678sfdfghjke32qw4e5ryt'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///products.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://the_clothing_world_db_user:LdZHY41nmtSXFv9XddiqZm8D1Vek94eU@dpg-cs558ci3esus73apijqg-a.oregon-postgres.render.com/the_clothing_world_db'
 db = SQLAlchemy(app)
 
 # Define the Users model
@@ -188,7 +189,7 @@ def remove_user_wishlist():
     if user_id:
         data = request.json
         product_id = data.get('productid')
-        removed_item = UserWishlist.query.filter_by(usersid=user_id, productid=product_id, is_active = True).first()
+        removed_item = UserWishlist.query.filter_by(usersid=user_id, productid=product_id, is_active = 1).first()
         if removed_item:
             removed_item.is_active = False
             db.session.commit()

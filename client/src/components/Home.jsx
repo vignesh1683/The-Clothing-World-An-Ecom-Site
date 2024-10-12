@@ -43,11 +43,14 @@ function Home({ gender }) {
     try {
       const token = localStorage.getItem("token");
       if (token) {
-        const res = await axios.get("http://localhost:5000/user_wishlist_get", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await axios.get(
+          "https://the-clothing-world-an-ecom-site.onrender.com/user_wishlist_get",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         const productIds = res.data.map((item) => item.product_detail_id);
         setWishlist(productIds);
       }
@@ -60,11 +63,11 @@ function Home({ gender }) {
     try {
       let apiUrl = "";
       if (gender === "mens") {
-        apiUrl = `http://localhost:5000/products/mens/${category}`;
+        apiUrl = `https://the-clothing-world-an-ecom-site.onrender.com/products/mens/${category}`;
         const response = await axios.get(apiUrl);
         setProductsMens(response.data.map(parseProduct));
       } else if (gender === "womens") {
-        apiUrl = `http://localhost:5000/products/women/${category}`;
+        apiUrl = `https://the-clothing-world-an-ecom-site.onrender.com/products/women/${category}`;
         const response = await axios.get(apiUrl);
         setProductsWomens(response.data.map(parseProduct));
       }
@@ -82,13 +85,14 @@ function Home({ gender }) {
     console.log(productId);
     try {
       const res = await axios.post(
-        "http://localhost:5000/user_wishlist_add",
+        "https://the-clothing-world-an-ecom-site.onrender.com/user_wishlist_add",
         {
           productid: productId,
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setWishlist(...wishlist, res.data);
+      getWishlist();
     } catch (error) {
       console.error("Error fetching wishlist:", error);
     }
@@ -112,15 +116,12 @@ function Home({ gender }) {
         quantity: quantity,
       };
       const response = await axios.post(
-        "http://localhost:5000/user_bag_add",
+        "https://the-clothing-world-an-ecom-site.onrender.com/user_bag_add",
         data,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      if (!response?.data?.message) {
-        setModalOpen(false);
-      } else {
-        setModalOpen(true);
-      }
+      alert("Product added to bag:");
+      setModalOpen(false);
     } catch (error) {
       console.error("Error adding product to bag:", error);
     }

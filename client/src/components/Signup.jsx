@@ -17,7 +17,7 @@ function Signup() {
         return;
       }
       const response = await axios.post(
-        "http://localhost:5000/signup",
+        "https://the-clothing-world-an-ecom-site.onrender.com/signup",
         { username, password, confirmPassword },
         {
           headers: {

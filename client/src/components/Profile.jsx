@@ -27,11 +27,14 @@ function Profile() {
   const getProfile = async () => {
     const token = localStorage.getItem("token");
     try {
-      const res = await axios.get("http://localhost:5000/get_profile", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await axios.get(
+        "https://the-clothing-world-an-ecom-site.onrender.com/get_profile",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setUser(res.data);
       setFormData(res.data);
     } catch (error) {
@@ -42,11 +45,14 @@ function Profile() {
   const getAllProfiles = async () => {
     const token = localStorage.getItem("token");
     try {
-      const res = await axios.get("http://localhost:5000/get_all_profiles", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await axios.get(
+        "https://the-clothing-world-an-ecom-site.onrender.com/get_all_profiles",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       console.log("All profiles:", res.data);
     } catch (error) {
       console.error("Error fetching all profiles:", error);
@@ -66,11 +72,15 @@ function Profile() {
     try {
       const token = localStorage.getItem("token");
       if (token) {
-        await axios.post("http://localhost:5000/save_profile", formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await axios.post(
+          "https://the-clothing-world-an-ecom-site.onrender.com/save_profile",
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         console.log("Profile saved successfully");
         navigate("/");
       } else {

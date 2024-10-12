@@ -36,11 +36,14 @@ function Womens() {
     try {
       const token = localStorage.getItem("token");
       if (token) {
-        const res = await axios.get("http://localhost:5000/user_wishlist_get", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await axios.get(
+          "https://the-clothing-world-an-ecom-site.onrender.com/user_wishlist_get",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         const productIds = res.data.map((item) => item.product_detail_id);
         setWishlist(productIds);
       }
@@ -96,7 +99,7 @@ function Womens() {
   const fetchProducts = async (category) => {
     try {
       let apiUrl = "";
-      apiUrl = `http://localhost:5000/products/women/${category}`;
+      apiUrl = `https://the-clothing-world-an-ecom-site.onrender.com/products/women/${category}`;
       const response = await axios.get(apiUrl);
       return response.data.map(parseProduct);
     } catch (error) {
@@ -113,7 +116,7 @@ function Womens() {
     console.log(productId);
     try {
       const res = await axios.post(
-        "http://localhost:5000/user_wishlist_add",
+        "https://the-clothing-world-an-ecom-site.onrender.com/user_wishlist_add",
         {
           productid: productId,
         },
@@ -145,7 +148,7 @@ function Womens() {
     };
     console.log(data);
     const response = await axios.post(
-      "http://localhost:5000/user_bag_add",
+      "https://the-clothing-world-an-ecom-site.onrender.com/user_bag_add",
       data,
       { headers: { Authorization: `Bearer ${token}` } }
     );
