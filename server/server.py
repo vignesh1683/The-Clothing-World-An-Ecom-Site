@@ -9,12 +9,13 @@ from sqlalchemy.orm import relationship
 import bcrypt
 from flask_bcrypt import check_password_hash
 import enum
+import os
 
 app = Flask(__name__)
 CORS(app)
 
 app.config['SECRET_KEY'] = 'rzawsedrtyuioyi764321345678sfdfghjke32qw4e5ryt'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///products.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 db = SQLAlchemy(app)
 
 # Define the Users model
@@ -114,15 +115,12 @@ publicRoutes = ['login', 'signup']
 def verify_token():
     if request.endpoint not in publicRoutes:
         token = request.headers.get('Authorization')
-        print(token)
         if token:
             token = token.split('Bearer ')[1]
-            print(token)
             try:
                 decoded_token = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
                 userId = decoded_token.get('userId')
                 request.user = db.session.query(Users).filter_by(usersid=userId).first()
-                print(userId)
                 return userId
             except jwt.ExpiredSignatureError:
                 return jsonify({'message': 'Token has expired'}), 401
@@ -159,7 +157,6 @@ def get_user_wishlist():
     user_id = verify_token()
     try:
         user_wishlist = UserWishlist.query.filter_by(usersid=user_id, is_active = 1).all()
-        print(user_wishlist)
         
         if not user_wishlist:
             return jsonify({'message': 'User wishlist is empty'}), 200
@@ -394,7 +391,6 @@ def create_category():
 @app.route('/category', methods=['GET'])
 def show_category():
     categories = Category.query.all()
-    print(categories)
     category_list = []
     for category in categories:
         category_data = {
