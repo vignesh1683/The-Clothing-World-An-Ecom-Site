@@ -81,7 +81,7 @@ class Category(db.Model):
     model = db.Column(db.String(10))
     description = db.Column(db.String(1000))
     price = db.Column(db.String(5))
-    image = db.Column(db.String(100))
+    image = db.Column(db.String(100000))
     product_details = relationship("ProductDetails", back_populates="category")
     
 class UserBag(db.Model):
