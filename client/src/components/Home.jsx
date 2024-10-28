@@ -106,7 +106,7 @@ function Home({ gender }) {
       }
       const token = localStorage.getItem("token");
       if (!token) {
-        navigate("/");
+        navigate("/login");
         return;
       }
       let data = {
@@ -155,6 +155,7 @@ function Home({ gender }) {
   const parseProduct = (product) => ({
     ...product,
     gender: parseGender(product.gender),
+    image: atob(product.image),
   });
 
   const parseGender = (gender) => {
@@ -196,7 +197,7 @@ function Home({ gender }) {
                 <div className="content">
                   <div className="content-overlay">
                     <img
-                      src={`${product.image}`}
+                      src={product.image}
                       alt="dress"
                       className="product-image"
                     ></img>

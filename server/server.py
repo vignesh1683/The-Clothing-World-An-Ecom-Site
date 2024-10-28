@@ -1,9 +1,10 @@
+import base64
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 import jwt
 from datetime import datetime, timedelta  
-from sqlalchemy import ForeignKey, Enum
+from sqlalchemy import ForeignKey, Enum, LargeBinary
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 import bcrypt
@@ -15,8 +16,7 @@ app = Flask(__name__)
 CORS(app)
 
 app.config['SECRET_KEY'] = 'rzawsedrtyuioyi764321345678sfdfghjke32qw4e5ryt'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///products.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://the_clothing_world_db_user:LdZHY41nmtSXFv9XddiqZm8D1Vek94eU@dpg-cs558ci3esus73apijqg-a.oregon-postgres.render.com/the_clothing_world_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://default:u1KyemnAx5qS@ep-muddy-glitter-a4ejile6-pooler.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require')
 db = SQLAlchemy(app)
 
 # Define the Users model
@@ -74,6 +74,11 @@ class gender(enum.Enum):
     mens = 1
     women = 2
 
+class ProductImages(db.Model):
+    __tablename__ = 'product_images'
+
+    id = db.Column(db.Integer, primary_key=True)
+    image = db.Column(LargeBinary)
 class Category(db.Model):
     __tablename__ = 'categories'
 
@@ -82,8 +87,10 @@ class Category(db.Model):
     model = db.Column(db.String(10))
     description = db.Column(db.String(1000))
     price = db.Column(db.String(5))
-    image = db.Column(db.String(100000))
+    image_id = db.Column(db.Integer, ForeignKey('product_images.id')) 
+    
     product_details = relationship("ProductDetails", back_populates="category")
+    image = relationship("ProductImages")
     
 class UserBag(db.Model):
     __tablename__ = 'user_bag'
@@ -172,7 +179,7 @@ def get_user_wishlist():
                         'product_detail_id': product.Product_detailID,
                         'model': category.model,
                         'gender': str(category.gender),
-                        'image': category.image,
+                        'image': category.image.image if category.image else None,
                         'description': category.description,
                         'price': category.price
 
@@ -199,6 +206,9 @@ def remove_user_wishlist():
     else:
         return jsonify({'error': 'Unauthorized access'}), 401
 
+def encode_image(image_bytes):
+    return base64.b64encode(image_bytes).decode('utf-8') if image_bytes else None
+
 @app.route('/products/mens/<model>', methods=['GET'])
 def products(model):
     query_result = db.session.query(ProductDetails, Category).join(Category).filter(Category.model == model).limit(6)
@@ -214,7 +224,7 @@ def products(model):
             'model': category.model,
             'description': category.description,
             'price': category.price,
-            'image': category.image  
+            'image': encode_image(category.image.image) if category.image else None
         }
         products_with_categories.append(product_data)
     return jsonify(products_with_categories)
@@ -234,7 +244,7 @@ def product(model):
             'model': category.model,
             'description': category.description,
             'price': category.price,
-            'image': category.image  
+            'image': encode_image(category.image.image) if category.image else None   
         }
         products_with_categories.append(product_data)
     return jsonify(products_with_categories)
@@ -285,7 +295,7 @@ def get_from_user_bag():
                         'color': item.color,
                         'size': item.size,
                         'quantity': item.quantity,
-                        'image': category.image,
+                        'image': category.image.image if category.image else None,
                         'model': category.model,
                         'description': category.description,
                         'gender': str(category.gender),
@@ -399,7 +409,7 @@ def show_category():
             'model': category.model,
             'description': category.description,
             'price': category.price,
-            'image': category.image
+            'image': category.image.image if category.image else None
         }
         category_list.append(category_data)
     return jsonify(category_list), 200

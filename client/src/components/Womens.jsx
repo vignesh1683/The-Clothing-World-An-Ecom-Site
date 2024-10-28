@@ -167,6 +167,7 @@ function Womens() {
   const parseProduct = (product) => ({
     ...product,
     gender: parseGender(product.gender),
+    image: atob(product.image),
   });
 
   const parseGender = (gender) => {

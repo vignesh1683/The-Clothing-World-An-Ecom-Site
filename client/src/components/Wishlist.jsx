@@ -27,12 +27,13 @@ function Wishlist() {
             },
           }
         );
-        const productIds = res.data.map((item) => item.product_detail_id);
+        const productIds = res.data.map(parseProduct);
         setWishlist(productIds);
+      } else {
+        navigate("/login");
       }
     } catch (error) {
       console.error("Error fetching wishlist:", error);
-      navigate("/login");
     }
   };
 
@@ -106,6 +107,7 @@ function Wishlist() {
   const parseProduct = (product) => ({
     ...product,
     gender: parseGender(product.gender),
+    image: atob(product.image),
   });
 
   const parseGender = (gender) => {

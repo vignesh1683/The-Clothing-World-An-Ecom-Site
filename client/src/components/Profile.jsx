@@ -20,6 +20,9 @@ function Profile() {
   });
 
   useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      navigate("/login");
+    }
     getProfile();
     getAllProfiles();
   }, []);

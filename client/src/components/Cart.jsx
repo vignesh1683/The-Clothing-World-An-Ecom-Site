@@ -9,13 +9,17 @@ function Cart() {
   const [products, setProducts] = useState([]);
   const [bagItems, setBagItems] = useState([]);
 
+  const token = localStorage.getItem("token");
+
   useEffect(() => {
-    getBagItems();
+    if (!token) {
+      navigate("/login");
+    }
+    getBagItems(token);
     fetchAllProducts();
   }, []);
 
-  const getBagItems = async () => {
-    const token = localStorage.getItem("token");
+  const getBagItems = async (token) => {
     try {
       const res = await axios.get(
         "https://the-clothing-world-an-ecom-site.onrender.com/user_bag_get",
@@ -90,6 +94,7 @@ function Cart() {
   const parseProduct = (product) => ({
     ...product,
     gender: parseGender(product.gender),
+    image: atob(product.image),
   });
 
   const parseGender = (gender) => {
